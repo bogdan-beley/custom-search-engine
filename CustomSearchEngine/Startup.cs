@@ -24,6 +24,9 @@ namespace CustomSearchEngine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddHttpClient("GoogleCustomSearch", client => {
+                client.BaseAddress = new Uri("https://cse.google.com/cse?cx=39e0af95da7397237");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
