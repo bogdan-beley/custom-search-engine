@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomSearchEngine", "CustomSearchEngine\CustomSearchEngine.csproj", "{FC56AEBD-4E55-4795-B95D-4831D632963A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC56AEBD-4E55-4795-B95D-4831D632963A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC56AEBD-4E55-4795-B95D-4831D632963A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC56AEBD-4E55-4795-B95D-4831D632963A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC56AEBD-4E55-4795-B95D-4831D632963A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D17C0FCC-8305-451C-A892-C95554B879A6}
+	EndGlobalSection
+EndGlobal
