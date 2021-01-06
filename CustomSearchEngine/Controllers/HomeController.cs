@@ -5,16 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly HttpClient _googleCustomSearch;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IHttpClientFactory factory, ILogger<HomeController> logger)
         {
+            _googleCustomSearch = factory.CreateClient("GoogleCustomSearch");
             _logger = logger;
         }
 
