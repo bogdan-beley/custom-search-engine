@@ -13,6 +13,9 @@ namespace CustomSearchEngine
 {
     public class Startup
     {
+        private string _apiKey = null;
+        private string _searchEngineId;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,7 +28,9 @@ namespace CustomSearchEngine
         {
             services.AddControllersWithViews();
             services.AddHttpClient("GoogleCustomSearch", client => {
-                client.BaseAddress = new Uri("https://cse.google.com/cse?cx=39e0af95da7397237");
+                _apiKey = Configuration["GoogleCustomSearch:ApiKey"];
+                _searchEngineId = Configuration["GoogleCustomSearch:SearchEngineId"];
+                client.BaseAddress = new Uri("https://www.googleapis.com/customsearch/v1?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");
             });
         }
 
