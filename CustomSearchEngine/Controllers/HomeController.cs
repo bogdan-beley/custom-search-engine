@@ -1,12 +1,11 @@
 ﻿using CustomSearchEngine.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net.Http.Json;
 
 namespace CustomSearchEngine.Controllers
 {
@@ -24,6 +23,12 @@ namespace CustomSearchEngine.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        private async Task<GoogleCustomSearchModel> GoogleCustomSearchService(string query)
+        {
+            return await _googleCustomSearch
+                .GetFromJsonAsync<GoogleCustomSearchModel>(_googleCustomSearch.BaseAddress + query);
         }
 
         public IActionResult Privacy()
