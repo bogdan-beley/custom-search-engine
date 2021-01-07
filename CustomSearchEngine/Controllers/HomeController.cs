@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
+using CustomSearchEngine.ViewModels;
 
 namespace CustomSearchEngine.Controllers
 {
@@ -23,6 +24,20 @@ namespace CustomSearchEngine.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SearchResults(string search)
+        {
+            var googleSearchResults = await GoogleCustomSearchService(search);
+
+            var srvm = new SearchResultsViewModel
+            {
+                GoogleSearchResults = googleSearchResults
+            };
+
+            return View(srvm);
         }
 
         private async Task<GoogleCustomSearchModel> GoogleCustomSearchService(string query)
