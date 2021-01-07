@@ -13,6 +13,9 @@ namespace CustomSearchEngine
 {
     public class Startup
     {
+        private string _apiKey = null;
+        private string _searchEngineId;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,6 +27,11 @@ namespace CustomSearchEngine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddHttpClient("GoogleCustomSearch", client => {
+                _apiKey = Configuration["GoogleCustomSearch:ApiKey"];
+                _searchEngineId = Configuration["GoogleCustomSearch:SearchEngineId"];
+                client.BaseAddress = new Uri("https://www.googleapis.com/customsearch/v1?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

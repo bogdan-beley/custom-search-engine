@@ -1,0 +1,15 @@
+﻿@model CustomSearchEngine.ViewModels.SearchResultsViewModel
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+@await Html.PartialAsync("_SearchPartial")
+
+@foreach (var item in Model.GoogleSearchResults.Items)
+{
+    <p><a href="@item.Link" target="_blank">@item.Link</a></p>
+    <p class="h5">@item.Title</p>
+    <p class="font-italic">@item.Snippet</p>
+    <br />
+}
