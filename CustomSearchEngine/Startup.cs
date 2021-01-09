@@ -1,3 +1,4 @@
+using CustomSearchEngine.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,7 +28,7 @@ namespace CustomSearchEngine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddHttpClient("GoogleCustomSearch", client => {
+            services.AddHttpClient<IGoogleCustomSearchService, GoogleCustomSearchService>(client => {
                 _apiKey = Configuration["GoogleCustomSearch:ApiKey"];
                 _searchEngineId = Configuration["GoogleCustomSearch:SearchEngineId"];
                 client.BaseAddress = new Uri("https://www.googleapis.com/customsearch/v1?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");

@@ -2,22 +2,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
 using CustomSearchEngine.ViewModels;
+using CustomSearchEngine.Services;
+using System;
 
 namespace CustomSearchEngine.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly HttpClient _googleCustomSearch;
+        private readonly IGoogleCustomSearchService _googleCustomSearchService;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IHttpClientFactory factory, ILogger<HomeController> logger)
+        public HomeController(IGoogleCustomSearchService googleCustomSearchService, ILogger<HomeController> logger)
         {
-            _googleCustomSearch = factory.CreateClient("GoogleCustomSearch");
+            _googleCustomSearchService = googleCustomSearchService;
             _logger = logger;
         }
 
@@ -28,22 +28,24 @@ namespace CustomSearchEngine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchResults(string search)
+        public async Task<IActionResult> SearchResults(string searchQuery)
         {
-            var googleSearchResults = await GoogleCustomSearchService(search);
-
-            var srvm = new SearchResultsViewModel
+            try
             {
-                GoogleSearchResults = googleSearchResults
-            };
+                var googleSearchResults = await _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
 
-            return View(srvm);
-        }
+                var srvm = new SearchResultsViewModel
+                {
+                    GoogleSearchResults = googleSearchResults
+                };
 
-        private async Task<GoogleCustomSearchModel> GoogleCustomSearchService(string query)
-        {
-            return await _googleCustomSearch
-                .GetFromJsonAsync<GoogleCustomSearchModel>(_googleCustomSearch.BaseAddress + query);
+                return View(srvm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }   
         }
 
         public IActionResult Privacy()
