@@ -13,7 +13,7 @@ namespace CustomSearchEngine
     public class Startup
     {
         private string _apiKey = null;
-        private string _searchEngineId;
+        private string _searchEngineId = null;
 
         public Startup(IConfiguration configuration)
         {
