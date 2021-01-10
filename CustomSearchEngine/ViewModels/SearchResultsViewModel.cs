@@ -8,6 +8,6 @@ namespace CustomSearchEngine.ViewModels
 {
     public class SearchResultsViewModel
     {
-        public GoogleCustomSearchModel GoogleSearchResults { get; set; }
+        public GoogleCustomSearchRootObject GoogleSearchResults { get; set; }
     }
 }

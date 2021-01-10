@@ -15,10 +15,10 @@ namespace CustomSearchEngine.Services
             _httpClient = httpClient;
         }
 
-        public async Task<GoogleCustomSearchModel> GetSearchResultsAsync(string searchQuery)
+        public async Task<GoogleCustomSearchRootObject> GetSearchResultsAsync(string searchQuery)
         {
             return await _httpClient
-                .GetFromJsonAsync<GoogleCustomSearchModel>(_httpClient.BaseAddress + searchQuery);
+                .GetFromJsonAsync<GoogleCustomSearchRootObject>(_httpClient.BaseAddress + searchQuery);
         }
     }
 }
