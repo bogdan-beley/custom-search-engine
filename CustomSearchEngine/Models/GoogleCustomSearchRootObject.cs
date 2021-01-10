@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Models
 {
-    public class GoogleCustomSearchModel
+    public class GoogleCustomSearchRootObject
     {
         public int Id { get; set; }
         public GoogleCustomSearchItem[] Items { get; set; }
