@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Services
 {
-    public interface IGoogleCustomSearchService
+    public interface ISearchResultsService
     {
-        Task<SearchResult> GetSearchResultsAsync(string searchQuery);
+        Task WriteToDbAsync(SearchResult searchResult);
     }
 }

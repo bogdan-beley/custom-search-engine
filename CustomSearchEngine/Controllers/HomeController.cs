@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Net.Http.Json;
-using CustomSearchEngine.ViewModels;
 using CustomSearchEngine.Services;
 using System;
 
@@ -13,11 +11,13 @@ namespace CustomSearchEngine.Controllers
     public class HomeController : Controller
     {
         private readonly IGoogleCustomSearchService _googleCustomSearchService;
+        private readonly ISearchResultsService _searchResultService;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IGoogleCustomSearchService googleCustomSearchService, ILogger<HomeController> logger)
+        public HomeController(IGoogleCustomSearchService googleCustomSearchService, ISearchResultsService searchResultsService, ILogger<HomeController> logger)
         {
             _googleCustomSearchService = googleCustomSearchService;
+            _searchResultService = searchResultsService;
             _logger = logger;
         }
 
@@ -28,18 +28,15 @@ namespace CustomSearchEngine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchResults(string searchQuery)
+        public async Task<IActionResult> SearchResultsFromAPI(string searchQuery)
         {
             try
             {
-                var googleSearchResults = await _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
+                var searchResults = await _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
 
-                var srvm = new SearchResultsViewModel
-                {
-                    GoogleSearchResults = googleSearchResults
-                };
+                await _searchResultService.WriteToDbAsync(searchResults);
 
-                return View(srvm);
+                return View(searchResults);
             }
             catch (Exception ex)
             {
