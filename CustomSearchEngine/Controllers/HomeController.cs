@@ -34,14 +34,11 @@ namespace CustomSearchEngine.Controllers
         {
             try
             {
-                var googleSearchResults = await _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
+                var searchResults = await _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
 
-                var srvm = new SearchResultsViewModel
-                {
-                    GoogleSearchResults = googleSearchResults
-                };
+                await _searchResultService.WriteToDbAsync(searchResults);
 
-                return View(srvm);
+                return View(searchResults);
             }
             catch (Exception ex)
             {
