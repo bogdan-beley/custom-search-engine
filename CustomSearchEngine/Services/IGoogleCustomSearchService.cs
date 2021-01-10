@@ -5,6 +5,6 @@ namespace CustomSearchEngine.Services
 {
     public interface IGoogleCustomSearchService
     {
-        Task<GoogleCustomSearchRootObject> GetSearchResultsAsync(string searchQuery);
+        Task<SearchResult> GetSearchResultsAsync(string searchQuery);
     }
 }
