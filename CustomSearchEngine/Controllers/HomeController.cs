@@ -28,7 +28,7 @@ namespace CustomSearchEngine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchResults(string searchQuery)
+        public async Task<IActionResult> SearchResultsFromAPI(string searchQuery)
         {
             try
             {

@@ -1,0 +1,25 @@
+﻿@model CustomSearchEngine.Models.SearchResult
+
+@{
+    ViewData["Title"] = "Search results from " + @Model.SearchEngine +" API";
+}
+
+@await Html.PartialAsync("_SearchPartial")
+
+<h2>Search results from @Model.SearchEngine API</h2>
+<hr />
+
+@foreach (var item in Model.SearchResultItems)
+{
+    <table class="table-borderless">
+        <tr>
+            <td><a href="@item.Link" target="_blank">@item.Link</a></td>
+        </tr>
+        <tr>
+            <td><h6>@item.Title</h6></td>
+        </tr>
+        <tr>
+            <td><p class="font-italic">@item.Snippet</p></td>
+        </tr>
+    </table>
+}
