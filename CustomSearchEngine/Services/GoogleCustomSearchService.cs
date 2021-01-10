@@ -35,7 +35,8 @@ namespace CustomSearchEngine.Services
             var searchResult = new SearchResult()
             {
                 SearchResultItems = searhResultItems,
-                SearchQuery = searchQuery
+                SearchQuery = searchQuery,
+                SearchEngine = "Google"
             };
 
             return searchResult;
