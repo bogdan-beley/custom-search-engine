@@ -9,7 +9,7 @@ namespace CustomSearchEngine.Models
             Database.EnsureCreated();
         }
 
-        public DbSet<GoogleCustomSearchRootObject> GoogleCustomSearchRootObjects { get; set; }
-        public DbSet<GoogleCustomSearchItem> GoogleCustomSearchItems { get; set; }
+        public DbSet<SearchResult> SearchResults { get; set; }
+        public DbSet<SearchResultItem> SearchResultItems { get; set; }
     }
 }

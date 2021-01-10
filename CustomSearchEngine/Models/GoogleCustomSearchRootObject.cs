@@ -7,7 +7,6 @@ namespace CustomSearchEngine.Models
 {
     public class GoogleCustomSearchRootObject
     {
-        public int Id { get; set; }
-        public GoogleCustomSearchItem[] Items { get; set; }
+        public List<GoogleCustomSearchItem> Items { get; set; }
     }
 }
