@@ -55,6 +55,12 @@ namespace CustomSearchEngine.Controllers
             }
         }
 
+        public IActionResult SearchFromDb()
+        {
+            return View();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> SearchResultsFromDb(string searchQuery)
         {
             return View(await _searchResultService.FindByTitle(searchQuery));
