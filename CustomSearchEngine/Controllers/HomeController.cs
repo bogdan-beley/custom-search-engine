@@ -35,8 +35,10 @@ namespace CustomSearchEngine.Controllers
             {
                 var searchResultsFromGoogle = _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
 
-                var tasksList = new List<Task<SearchResult>>();
-                tasksList.Add(searchResultsFromGoogle); // more API services will be added to taskList
+                var tasksList = new List<Task<SearchResult>>
+                {
+                    searchResultsFromGoogle // more API services will be added to taskList
+                };
 
                 // TODO: Add CancellationToken
                 var firstCompletedTask = await Task.WhenAny(tasksList);
@@ -51,6 +53,11 @@ namespace CustomSearchEngine.Controllers
                 _logger.LogError(ex.Message);
                 throw;
             }
+        }
+
+        public async Task<IActionResult> SearchResultsFromDb(string searchQuery)
+        {
+            return View(await _searchResultService.FindByTitle(searchQuery));
         }
 
         public IActionResult Privacy()
