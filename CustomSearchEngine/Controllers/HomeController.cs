@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using CustomSearchEngine.Services;
 using System;
+using System.Collections.Generic;
 
 namespace CustomSearchEngine.Controllers
 {
@@ -32,7 +33,14 @@ namespace CustomSearchEngine.Controllers
         {
             try
             {
-                var searchResults = await _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
+                var searchResultsFromGoogle = _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
+
+                var tasksList = new List<Task<SearchResult>>();
+                tasksList.Add(searchResultsFromGoogle); // more API services will be added to taskList
+
+                // TODO: Add CancellationToken
+                var firstCompletedTask = await Task.WhenAny(tasksList);
+                var searchResults = await firstCompletedTask;
 
                 await _searchResultService.WriteToDbAsync(searchResults);
 
@@ -42,7 +50,7 @@ namespace CustomSearchEngine.Controllers
             {
                 _logger.LogError(ex.Message);
                 throw;
-            }   
+            }
         }
 
         public IActionResult Privacy()
