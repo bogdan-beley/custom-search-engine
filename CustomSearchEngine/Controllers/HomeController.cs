@@ -13,11 +13,13 @@ namespace CustomSearchEngine.Controllers
     public class HomeController : Controller
     {
         private readonly IGoogleCustomSearchService _googleCustomSearchService;
+        private readonly ISearchResultsService _searchResultService;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IGoogleCustomSearchService googleCustomSearchService, ILogger<HomeController> logger)
+        public HomeController(IGoogleCustomSearchService googleCustomSearchService, ISearchResultsService searchResultsService, ILogger<HomeController> logger)
         {
             _googleCustomSearchService = googleCustomSearchService;
+            _searchResultService = searchResultsService;
             _logger = logger;
         }
 
