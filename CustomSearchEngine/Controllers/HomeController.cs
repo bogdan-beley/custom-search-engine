@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Net.Http.Json;
-using CustomSearchEngine.ViewModels;
 using CustomSearchEngine.Services;
 using System;
 

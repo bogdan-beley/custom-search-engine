@@ -14,7 +14,7 @@ namespace CustomSearchEngine.Services
 
         public async Task WriteToDbAsync(SearchResult searchResult)
         {
-            await _dbContext.AddAsync(searchResult);
+            await _dbContext.SearchResults.AddAsync(searchResult);
             await _dbContext.SaveChangesAsync();
         }
     }
