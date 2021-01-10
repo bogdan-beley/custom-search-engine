@@ -9,6 +9,7 @@ namespace CustomSearchEngine.Models
     {
         public int Id { get; set; }
         public string SearchQuery { get; set; }
+        public string SearchEngine { get; set; }
         public List<SearchResultItem> SearchResultItems { get; set; }
     }
 }
