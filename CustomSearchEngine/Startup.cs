@@ -33,6 +33,7 @@ namespace CustomSearchEngine
                 _searchEngineId = Configuration["GoogleCustomSearch:SearchEngineId"];
                 client.BaseAddress = new Uri("https://www.googleapis.com/customsearch/v1?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");
             });
+            services.AddScoped<ISearchResultsService, SearchResultsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
