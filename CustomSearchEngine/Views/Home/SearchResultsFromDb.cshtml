@@ -1,0 +1,38 @@
+﻿@model List<CustomSearchEngine.Models.SearchResultItem>
+
+@{
+    ViewData["Title"] = "Search results from Database";
+}
+
+@await Html.PartialAsync("_SearchPartialFromDb")
+
+<h2>Search results from Database</h2>
+<hr />
+
+@if (Model.Count == 0)
+{
+    <p class="font-italic">Sorry. No results were found.</p>
+}
+else if(Model.Count == 1)
+{
+    <p class="font-italic"><span class="font-weight-bold">@Model.Count</span> result was found.</p>
+}
+else
+{
+    <p class="font-italic"><span class="font-weight-bold">@Model.Count</span> results where found.</p>
+}
+
+@foreach (var item in Model)
+{
+    <table class="table-borderless">
+        <tr>
+            <td><a href="@item.Link" target="_blank">@item.Link</a></td>
+        </tr>
+        <tr>
+            <td><h6>@item.Title</h6></td>
+        </tr>
+        <tr>
+            <td><p class="font-italic">@item.Snippet</p></td>
+        </tr>
+    </table>
+}
