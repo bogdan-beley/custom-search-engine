@@ -27,7 +27,7 @@ namespace CustomSearchEngine.Services
                 searhResultItems.Add(new SearchResultItem()
                 {
                     Title = item.Title,
-                    Link = item.Link,
+                    Link = item.DisplayLink,
                     Snippet = item.Snippet
                 });
             }
