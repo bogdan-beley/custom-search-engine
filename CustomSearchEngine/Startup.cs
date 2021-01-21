@@ -26,13 +26,22 @@ namespace CustomSearchEngine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
             services.AddDbContext<CustomSearchEngineContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CustomSearchEngineDb")));
+           
             services.AddHttpClient<IGoogleCustomSearchService, GoogleCustomSearchService>(client => {
                 _apiKey = Configuration["GoogleCustomSearch:ApiKey"];
                 _searchEngineId = Configuration["GoogleCustomSearch:SearchEngineId"];
                 client.BaseAddress = new Uri("https://www.googleapis.com/customsearch/v1?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");
             });
+
+            services.AddHttpClient<IBingCustomSearchService, BingCustomSearchService>(client => {
+                _apiKey = Configuration["BingCustomSearch:Ocp-Apim-Subscription-Key"];
+                client.BaseAddress = new Uri("https://api.bing.microsoft.com/v7.0/search/?q=");
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _apiKey);
+            });
+
             services.AddScoped<ISearchResultsService, SearchResultsService>();
         }
 
