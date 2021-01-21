@@ -20,7 +20,7 @@ namespace CustomSearchEngine.Services
         public async Task<SearchResult> GetSearchResultsAsync(string searchQuery)
         {
             var results = await _httpClient
-                .GetFromJsonAsync<BingCustomSearchRootObject>(_httpClient.BaseAddress + searchQuery);
+                .GetFromJsonAsync<BingWebSearchApiResult>(_httpClient.BaseAddress + searchQuery);
 
             var searhResultItems = new List<SearchResultItem>();
             foreach (var item in results.WebPages.Value)

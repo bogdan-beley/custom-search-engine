@@ -19,7 +19,7 @@ namespace CustomSearchEngine.Services
         public async Task<SearchResult> GetSearchResultsAsync(string searchQuery)
         {
             var results = await _httpClient
-                .GetFromJsonAsync<GoogleCustomSearchRootObject>(_httpClient.BaseAddress + searchQuery);
+                .GetFromJsonAsync<GoogleWebSearchApiResult>(_httpClient.BaseAddress + searchQuery);
 
             var searhResultItems = new List<SearchResultItem>();
             foreach (var item in results.Items)
