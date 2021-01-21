@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Services
 {
-    public sealed class BingCustomSearchService : IBingCustomSearchService
+    public sealed class BingWebSearchApiClient : IBingWebSearchApiClient
     {
         private readonly HttpClient _httpClient;
 
-        public BingCustomSearchService(HttpClient httpClient)
+        public BingWebSearchApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

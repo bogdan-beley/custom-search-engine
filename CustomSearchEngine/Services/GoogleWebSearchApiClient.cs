@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Services
 {
-    public sealed class GoogleCustomSearchService : IGoogleCustomSearchService
+    public sealed class GoogleWebSearchApiClient : IGoogleWebSearchApiClient
     {
         private readonly HttpClient _httpClient;
 
-        public GoogleCustomSearchService(HttpClient httpClient)
+        public GoogleWebSearchApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
