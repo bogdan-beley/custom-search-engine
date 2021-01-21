@@ -1,17 +1,18 @@
 ﻿using CustomSearchEngine.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Services
 {
-    public sealed class GoogleCustomSearchService : IGoogleCustomSearchService
+    public sealed class BingWebSearchApiClient : IBingWebSearchApiClient
     {
         private readonly HttpClient _httpClient;
 
-        public GoogleCustomSearchService(HttpClient httpClient)
+        public BingWebSearchApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -19,15 +20,15 @@ namespace CustomSearchEngine.Services
         public async Task<SearchResult> GetSearchResultsAsync(string searchQuery)
         {
             var results = await _httpClient
-                .GetFromJsonAsync<GoogleCustomSearchRootObject>(_httpClient.BaseAddress + searchQuery);
+                .GetFromJsonAsync<BingWebSearchApiResult>(_httpClient.BaseAddress + searchQuery);
 
             var searhResultItems = new List<SearchResultItem>();
-            foreach (var item in results.Items)
+            foreach (var item in results.WebPages.Value)
             {
                 searhResultItems.Add(new SearchResultItem()
                 {
-                    Title = item.Title,
-                    Link = item.DisplayLink,
+                    Title = item.Name,
+                    Link = item.DisplayUrl,
                     Snippet = item.Snippet
                 });
             }
@@ -36,7 +37,7 @@ namespace CustomSearchEngine.Services
             {
                 SearchResultItems = searhResultItems,
                 SearchQuery = searchQuery,
-                SearchEngine = "Google"
+                SearchEngine = "Bing"
             };
 
             return searchResult;

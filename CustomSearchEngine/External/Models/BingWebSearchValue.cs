@@ -1,6 +1,6 @@
 ﻿namespace CustomSearchEngine.Models
 {
-    public class BingCustomSearchValue
+    public class BingWebSearchValue
     {
         public string Name { get; set; }
         public string DisplayUrl { get; set; }

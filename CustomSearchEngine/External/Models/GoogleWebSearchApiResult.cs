@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Models
 {
-    public class BingCustomSearchRootObject
+    public class GoogleWebSearchApiResult
     {
-        public BingCustomSearchWebpages WebPages { get; set; }
+        public List<GoogleWebSearchItem> Items { get; set; }
     }
 }

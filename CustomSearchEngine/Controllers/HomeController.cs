@@ -11,15 +11,15 @@ namespace CustomSearchEngine.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IGoogleCustomSearchService _googleCustomSearchService;
-        private readonly IBingCustomSearchService _bingCustomSearchService;
+        private readonly IGoogleWebSearchApiClient _googleCustomSearchService;
+        private readonly IBingWebSearchApiClient _bingCustomSearchService;
         private readonly ISearchResultsService _searchResultService;
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(
-            IGoogleCustomSearchService googleCustomSearchService, 
+            IGoogleWebSearchApiClient googleCustomSearchService, 
             ISearchResultsService searchResultsService, 
-            IBingCustomSearchService bingCustomSearchService,
+            IBingWebSearchApiClient bingCustomSearchService,
             ILogger<HomeController> logger)
         {
             _googleCustomSearchService = googleCustomSearchService;
