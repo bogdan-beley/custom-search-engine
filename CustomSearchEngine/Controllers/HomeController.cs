@@ -12,12 +12,18 @@ namespace CustomSearchEngine.Controllers
     public class HomeController : Controller
     {
         private readonly IGoogleCustomSearchService _googleCustomSearchService;
+        private readonly IBingCustomSearchService _bingCustomSearchService;
         private readonly ISearchResultsService _searchResultService;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(IGoogleCustomSearchService googleCustomSearchService, ISearchResultsService searchResultsService, ILogger<HomeController> logger)
+        public HomeController(
+            IGoogleCustomSearchService googleCustomSearchService, 
+            ISearchResultsService searchResultsService, 
+            IBingCustomSearchService bingCustomSearchService,
+            ILogger<HomeController> logger)
         {
             _googleCustomSearchService = googleCustomSearchService;
+            _bingCustomSearchService = bingCustomSearchService;
             _searchResultService = searchResultsService;
             _logger = logger;
         }
@@ -34,17 +40,20 @@ namespace CustomSearchEngine.Controllers
             try
             {
                 var searchResultsFromGoogle = _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
+                var searchResultsFromBing = _bingCustomSearchService.GetSearchResultsAsync(searchQuery);
 
                 var tasksList = new List<Task<SearchResult>>
                 {
-                    searchResultsFromGoogle // more API services will be added to taskList
+                    searchResultsFromGoogle,
+                    searchResultsFromBing
                 };
 
                 // TODO: Add CancellationToken
                 var firstCompletedTask = await Task.WhenAny(tasksList);
                 var searchResults = await firstCompletedTask;
 
-                await _searchResultService.WriteToDbAsync(searchResults);
+                if (searchResults != null)
+                    await _searchResultService.WriteToDbAsync(searchResults);
 
                 return View(searchResults);
             }
