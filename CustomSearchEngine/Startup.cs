@@ -1,3 +1,4 @@
+using CustomSearchEngine.Configuration;
 using CustomSearchEngine.Models;
 using CustomSearchEngine.Services;
 using Microsoft.AspNetCore.Builder;
@@ -12,9 +13,6 @@ namespace CustomSearchEngine
 {
     public class Startup
     {
-        private string _apiKey = null;
-        private string _searchEngineId = null;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,18 +28,12 @@ namespace CustomSearchEngine
             services.AddDbContext<CustomSearchEngineContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CustomSearchEngineDb")));
            
-            services.AddHttpClient<IGoogleWebSearchApiClient, GoogleWebSearchApiClient>(client => {
-                _apiKey = Configuration["GoogleCustomSearch:ApiKey"];
-                _searchEngineId = Configuration["GoogleCustomSearch:SearchEngineId"];
-                client.BaseAddress = new Uri("https://www.googleapis.com/customsearch/v1?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");
-            });
+            services.AddHttpClient<IGoogleWebSearchApiClient, GoogleWebSearchApiClient>();
+            services.AddHttpClient<IBingWebSearchApiClient, BingWebSearchApiClient>();
 
-            services.AddHttpClient<IBingWebSearchApiClient, BingWebSearchApiClient>(client => {
-                _apiKey = Configuration["BingCustomSearch:Ocp-Apim-Subscription-Key"];
-                client.BaseAddress = new Uri("https://api.bing.microsoft.com/v7.0/search/?q=");
-                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _apiKey);
-            });
-
+            services.Configure<ExternalApiClientsConfig>(ExternalApiClientsConfig.BingWebSearchApiClient, Configuration.GetSection("ExternalApiClientsConfig:BingWebSearchApiClient"));
+            services.Configure<ExternalApiClientsConfig>(ExternalApiClientsConfig.GoogleWebSearchApiClient, Configuration.GetSection("ExternalApiClientsConfig:GoogleWebSearchApiClient"));
+            
             services.AddScoped<ISearchResultsService, SearchResultsService>();
         }
 
