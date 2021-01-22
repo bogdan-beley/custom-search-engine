@@ -13,17 +13,20 @@ namespace CustomSearchEngine.Services
     public sealed class GoogleWebSearchApiClient : IGoogleWebSearchApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly ExternalApiClientsConfig _externalApiClientConfig;
+        private readonly string _apiKey;
+        private readonly string _searchEngineId;
 
         public GoogleWebSearchApiClient(
             HttpClient httpClient, 
             IConfiguration configuration, 
             IOptionsMonitor<ExternalApiClientsConfig> options)
         {
-            var externalApiClientConfig = options.Get(ExternalApiClientsConfig.GoogleWebSearchApiClient);
-            var apiKey = configuration["GoogleCustomSearch:ApiKey"]; // user-secrets
-            var searchEngineId = configuration["GoogleCustomSearch:SearchEngineId"]; // user-secrets
+            _externalApiClientConfig = options.Get(ExternalApiClientsConfig.GoogleWebSearchApiClient);
+            _apiKey = configuration["GoogleCustomSearch:ApiKey"]; // user-secrets
+            _searchEngineId = configuration["GoogleCustomSearch:SearchEngineId"]; // user-secrets
 
-            httpClient.BaseAddress = new Uri(externalApiClientConfig.Url + "?key=" + apiKey + "&cx=" + searchEngineId + "&q=");
+            httpClient.BaseAddress = new Uri(_externalApiClientConfig.Url + "?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");
 
             _httpClient = httpClient;
         }
