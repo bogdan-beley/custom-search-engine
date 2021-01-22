@@ -8,6 +8,8 @@ namespace CustomSearchEngine.Configuration
     public class ExternalApiClientsConfig
     {
         public const string BingWebSearchApiClient = "BingWebSearchApiClient";
+        public const string GoogleWebSearchApiClient = "GoogleWebSearchApiClient";
+
         public string Url { get; set; }
     }
 }

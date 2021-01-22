@@ -1,4 +1,7 @@
-﻿using CustomSearchEngine.Models;
+﻿using CustomSearchEngine.Configuration;
+using CustomSearchEngine.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -11,8 +14,17 @@ namespace CustomSearchEngine.Services
     {
         private readonly HttpClient _httpClient;
 
-        public GoogleWebSearchApiClient(HttpClient httpClient)
+        public GoogleWebSearchApiClient(
+            HttpClient httpClient, 
+            IConfiguration configuration, 
+            IOptionsMonitor<ExternalApiClientsConfig> options)
         {
+            var externalApiClientConfig = options.Get(ExternalApiClientsConfig.GoogleWebSearchApiClient);
+            var apiKey = configuration["GoogleCustomSearch:ApiKey"]; // user-secrets
+            var searchEngineId = configuration["GoogleCustomSearch:SearchEngineId"]; // user-secrets
+
+            httpClient.BaseAddress = new Uri(externalApiClientConfig.Url + "?key=" + apiKey + "&cx=" + searchEngineId + "&q=");
+
             _httpClient = httpClient;
         }
 
