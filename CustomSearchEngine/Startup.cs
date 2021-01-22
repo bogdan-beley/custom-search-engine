@@ -1,3 +1,4 @@
+using CustomSearchEngine.Configuration;
 using CustomSearchEngine.Models;
 using CustomSearchEngine.Services;
 using Microsoft.AspNetCore.Builder;
@@ -36,11 +37,9 @@ namespace CustomSearchEngine
                 client.BaseAddress = new Uri("https://www.googleapis.com/customsearch/v1?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");
             });
 
-            services.AddHttpClient<IBingWebSearchApiClient, BingWebSearchApiClient>(client => {
-                _apiKey = Configuration["BingCustomSearch:Ocp-Apim-Subscription-Key"];
-                client.BaseAddress = new Uri("https://api.bing.microsoft.com/v7.0/search/?q=");
-                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _apiKey);
-            });
+            services.AddHttpClient<IBingWebSearchApiClient, BingWebSearchApiClient>();
+
+            services.Configure<ExternalApiClientsConfig>(ExternalApiClientsConfig.BingWebSearchApiClient, Configuration.GetSection("ExternalApiClientsConfig:BingWebSearchApiClient"));
 
             services.AddScoped<ISearchResultsService, SearchResultsService>();
         }
