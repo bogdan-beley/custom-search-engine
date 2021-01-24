@@ -15,18 +15,13 @@ namespace CustomSearchEngine.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ExternalApiClientsConfig _externalApiClientConfig;
-        private readonly string _apiKey;
 
-        public BingWebSearchApiClient(
-            HttpClient httpClient,
-            IConfiguration configuration,
-            IOptionsMonitor<ExternalApiClientsConfig> options)
+        public BingWebSearchApiClient(HttpClient httpClient, IOptionsMonitor<ExternalApiClientsConfig> options)
         {
             _externalApiClientConfig = options.Get(ExternalApiClientsConfig.BingWebSearchApiClient);
-            _apiKey = configuration["BingCustomSearch:Ocp-Apim-Subscription-Key"]; // user-secrets
             
             httpClient.BaseAddress = new Uri(_externalApiClientConfig.Url);
-            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _apiKey);
+            httpClient.DefaultRequestHeaders.Add(_externalApiClientConfig.ApiKeyName, _externalApiClientConfig.ApiKey);
 
             _httpClient = httpClient;
         }
