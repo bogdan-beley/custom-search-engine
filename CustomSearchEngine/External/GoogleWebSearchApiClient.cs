@@ -14,19 +14,16 @@ namespace CustomSearchEngine.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ExternalApiClientsConfig _externalApiClientConfig;
-        private readonly string _apiKey;
-        private readonly string _searchEngineId;
 
         public GoogleWebSearchApiClient(
-            HttpClient httpClient, 
-            IConfiguration configuration, 
-            IOptionsMonitor<ExternalApiClientsConfig> options)
+            HttpClient httpClient, IOptionsMonitor<ExternalApiClientsConfig> options)
         {
             _externalApiClientConfig = options.Get(ExternalApiClientsConfig.GoogleWebSearchApiClient);
-            _apiKey = configuration["GoogleCustomSearch:ApiKey"]; // user-secrets
-            _searchEngineId = configuration["GoogleCustomSearch:SearchEngineId"]; // user-secrets
 
-            httpClient.BaseAddress = new Uri(_externalApiClientConfig.Url + "?key=" + _apiKey + "&cx=" + _searchEngineId + "&q=");
+            httpClient.BaseAddress = new Uri(_externalApiClientConfig.Url 
+                + "?key=" + _externalApiClientConfig.ApiKey 
+                + "&cx=" + _externalApiClientConfig.SearchEngineId 
+                + "&q=");
 
             _httpClient = httpClient;
         }
