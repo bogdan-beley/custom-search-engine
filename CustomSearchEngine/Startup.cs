@@ -26,7 +26,7 @@ namespace CustomSearchEngine
             services.AddControllersWithViews();
 
             services.AddDbContext<CustomSearchEngineContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("CustomSearchEngineDb")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
            
             services.AddHttpClient<IGoogleWebSearchApiClient, GoogleWebSearchApiClient>();
             services.AddHttpClient<IBingWebSearchApiClient, BingWebSearchApiClient>();
