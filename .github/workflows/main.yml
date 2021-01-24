@@ -1,0 +1,42 @@
+name: Deploy ASP.NET Core Project to AZURE App Service
+
+on:
+ push:
+  branches: [ master ]
+
+env:
+ AZURE_WEBAPP_NAME: CustomSearchEngine
+ AZURE_WEBAPP_PACKAGE_PATH: './published'
+ DOTNET_VERSION: '5.0.102'
+
+jobs:
+ build-and-deploy:
+  runs-on: ubuntu-lates
+  
+  steps:
+   - uses: actions/checkout@v2
+   
+   - name: Login via AZURE CLI
+     uses: azure/login@v1
+     with:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+   - name: SETUP .NET CORE
+     uses: actions/setup-dotnet@v1
+     with:
+      dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+   - name: Restore
+     run: dotnet restore
+
+   - name: Build
+     run: dotnet build --no-restore -c Release
+      
+   - name: Publish
+     run: dotnet publish --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+   - name: Deploy to AZURE App Service
+     uses: azure/webapps-deploy@v2
+     with:
+      app-name: ${{ env.AZURE_WEBAPP_NAME }}
+      package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
