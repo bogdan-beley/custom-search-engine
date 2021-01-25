@@ -6,26 +6,25 @@ using System.Threading.Tasks;
 using CustomSearchEngine.Services;
 using System;
 using System.Collections.Generic;
+using CustomSearchEngine.External.Models;
 
 namespace CustomSearchEngine.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IGoogleWebSearchApiClient _googleCustomSearchService;
-        private readonly IBingWebSearchApiClient _bingCustomSearchService;
+        private readonly IEnumerable<IExternalWebSearchApiClient> _externalWebSearchApiClients;
         private readonly ISearchResultsService _searchResultService;
         private readonly ILogger<HomeController> _logger;
+        private List<Task<SearchResult>> _taskList;
 
-        public HomeController(
-            IGoogleWebSearchApiClient googleCustomSearchService, 
+        public HomeController(IEnumerable<IExternalWebSearchApiClient> externalWebSearchApiClients,
             ISearchResultsService searchResultsService, 
-            IBingWebSearchApiClient bingCustomSearchService,
             ILogger<HomeController> logger)
         {
-            _googleCustomSearchService = googleCustomSearchService;
-            _bingCustomSearchService = bingCustomSearchService;
+            _externalWebSearchApiClients = externalWebSearchApiClients;
             _searchResultService = searchResultsService;
             _logger = logger;
+            _taskList = new List<Task<SearchResult>>();
         }
 
         public IActionResult Index()
@@ -39,17 +38,13 @@ namespace CustomSearchEngine.Controllers
         {
             try
             {
-                var searchResultsFromGoogle = _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
-                var searchResultsFromBing = _bingCustomSearchService.GetSearchResultsAsync(searchQuery);
-
-                var tasksList = new List<Task<SearchResult>>
+                foreach (var client in _externalWebSearchApiClients)
                 {
-                    searchResultsFromGoogle,
-                    searchResultsFromBing
-                };
+                    _taskList.Add(client.GetSearchResultsAsync(searchQuery));
+                }
 
                 // TODO: Add CancellationToken
-                var firstCompletedTask = await Task.WhenAny(tasksList);
+                var firstCompletedTask = await Task.WhenAny(_taskList);
                 var searchResults = await firstCompletedTask;
 
                 if (searchResults != null)
