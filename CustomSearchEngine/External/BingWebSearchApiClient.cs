@@ -1,4 +1,5 @@
 ﻿using CustomSearchEngine.Configuration;
+using CustomSearchEngine.External.Models;
 using CustomSearchEngine.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Services
 {
-    public sealed class BingWebSearchApiClient : IBingWebSearchApiClient
+    public sealed class BingWebSearchApiClient : IExternalWebSearchApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly ExternalApiClientsConfig _externalApiClientConfig;
