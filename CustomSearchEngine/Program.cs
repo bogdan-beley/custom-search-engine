@@ -27,14 +27,17 @@ namespace CustomSearchEngine
                 })
                 .ConfigureAppConfiguration((ctx, builder) =>
                 {
-                    var config = builder.Build();
-                    var tokenProvider = new AzureServiceTokenProvider();
+                    if (!ctx.HostingEnvironment.IsDevelopment())
+                    {
+                        var config = builder.Build();
+                        var tokenProvider = new AzureServiceTokenProvider();
 
-                    var kvClient = new KeyVaultClient((authority, resource, scope) =>
-                        tokenProvider.KeyVaultTokenCallback(authority, resource, scope));
+                        var kvClient = new KeyVaultClient((authority, resource, scope) =>
+                            tokenProvider.KeyVaultTokenCallback(authority, resource, scope));
 
-                    builder.AddAzureKeyVault(config["AzureKeyVault:BaseUrl"], kvClient,
-                        new DefaultKeyVaultSecretManager());
+                        builder.AddAzureKeyVault(config["AzureKeyVault:BaseUrl"], kvClient,
+                            new DefaultKeyVaultSecretManager());
+                    }
                 });
     }
 }
