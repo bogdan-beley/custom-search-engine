@@ -1,7 +1,9 @@
 ﻿using CustomSearchEngine.Configuration;
 using CustomSearchEngine.External.Models;
 using CustomSearchEngine.Models;
+using Google.Apis.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -17,8 +19,11 @@ namespace CustomSearchEngine.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ExternalApiClientsConfig _externalApiClientConfig;
+        private readonly ILogger<BingWebSearchApiClient> _logger;
 
-        public BingWebSearchApiClient(HttpClient httpClient, IOptionsMonitor<ExternalApiClientsConfig> options)
+        public BingWebSearchApiClient(HttpClient httpClient, 
+            IOptionsMonitor<ExternalApiClientsConfig> options,
+            ILogger<BingWebSearchApiClient> logger)
         {
             _externalApiClientConfig = options.Get(ExternalApiClientsConfig.BingWebSearchApiClient);
             
@@ -26,32 +31,45 @@ namespace CustomSearchEngine.Services
             httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _externalApiClientConfig.ApiKey);
 
             _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task<SearchResult> GetSearchResultsAsync(string searchQuery, CancellationTokenSource cts)
         {
-            var results = await _httpClient
+            var searchResult = new SearchResult();
+
+            try
+            {
+                var results = await _httpClient
                 .GetFromJsonAsync<BingWebSearchApiResult>(_httpClient.BaseAddress + searchQuery, cts.Token);
 
-            var searhResultItems = new List<SearchResultItem>();
-            foreach (var item in results.WebPages.Value)
-            {
-                searhResultItems.Add(new SearchResultItem()
+                var searhResultItems = new List<SearchResultItem>();
+                foreach (var item in results.WebPages.Value)
                 {
-                    Title = item.Name,
-                    Link = item.DisplayUrl,
-                    Snippet = item.Snippet
-                });
+                    searhResultItems.Add(new SearchResultItem()
+                    {
+                        Title = item.Name,
+                        Link = item.DisplayUrl,
+                        Snippet = item.Snippet
+                    });
+                }
+
+                searchResult = new SearchResult()
+                {
+                    SearchResultItems = searhResultItems,
+                    SearchQuery = searchQuery,
+                    SearchEngine = "Bing"
+                };
+
+                return searchResult;
             }
-
-            var searchResult = new SearchResult()
+            catch (TaskCanceledException ex)
             {
-                SearchResultItems = searhResultItems,
-                SearchQuery = searchQuery,
-                SearchEngine = "Bing"
-            };
+                _logger.LogInformation("The task was canceled because the server " +
+                    "had already received a response from another client. Message: " + ex.Message);
 
-            return searchResult;
+                return searchResult;
+            } 
         }
     }
 }

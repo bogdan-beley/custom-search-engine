@@ -2,6 +2,7 @@
 using CustomSearchEngine.External.Models;
 using CustomSearchEngine.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,12 @@ namespace CustomSearchEngine.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ExternalApiClientsConfig _externalApiClientConfig;
+        private readonly ILogger<GoogleWebSearchApiClient> _logger;
 
         public GoogleWebSearchApiClient(
-            HttpClient httpClient, IOptionsMonitor<ExternalApiClientsConfig> options)
+            HttpClient httpClient, 
+            IOptionsMonitor<ExternalApiClientsConfig> options,
+            ILogger<GoogleWebSearchApiClient> logger)
         {
             _externalApiClientConfig = options.Get(ExternalApiClientsConfig.GoogleWebSearchApiClient);
 
@@ -28,32 +32,45 @@ namespace CustomSearchEngine.Services
                 + "&q=");
 
             _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task<SearchResult> GetSearchResultsAsync(string searchQuery, CancellationTokenSource cts)
         {
-            var results = await _httpClient
+            var searchResult = new SearchResult();
+
+            try
+            {
+                var results = await _httpClient
                 .GetFromJsonAsync<GoogleWebSearchApiResult>(_httpClient.BaseAddress + searchQuery, cts.Token);
 
-            var searhResultItems = new List<SearchResultItem>();
-            foreach (var item in results.Items)
-            {
-                searhResultItems.Add(new SearchResultItem()
+                var searhResultItems = new List<SearchResultItem>();
+                foreach (var item in results.Items)
                 {
-                    Title = item.Title,
-                    Link = item.DisplayLink,
-                    Snippet = item.Snippet
-                });
+                    searhResultItems.Add(new SearchResultItem()
+                    {
+                        Title = item.Title,
+                        Link = item.DisplayLink,
+                        Snippet = item.Snippet
+                    });
+                }
+
+                searchResult = new SearchResult()
+                {
+                    SearchResultItems = searhResultItems,
+                    SearchQuery = searchQuery,
+                    SearchEngine = "Google"
+                };
+
+                return searchResult;
             }
-
-            var searchResult = new SearchResult()
+            catch (TaskCanceledException ex)
             {
-                SearchResultItems = searhResultItems,
-                SearchQuery = searchQuery,
-                SearchEngine = "Google"
-            };
+                _logger.LogInformation("The task was canceled because the server " +
+                    "had already received a response from another client. Message: " + ex.Message);
 
-            return searchResult;
+                return searchResult;
+            }
         }
     }
 }
