@@ -16,7 +16,7 @@ namespace CustomSearchEngine.Controllers
         private readonly IEnumerable<IExternalWebSearchApiClient> _externalWebSearchApiClients;
         private readonly ISearchResultsService _searchResultService;
         private readonly ILogger<HomeController> _logger;
-        private List<Task<SearchResult>> _taskList;
+        private readonly List<Task<SearchResult>> _taskList;
 
         public HomeController(IEnumerable<IExternalWebSearchApiClient> externalWebSearchApiClients,
             ISearchResultsService searchResultsService, 
@@ -44,8 +44,8 @@ namespace CustomSearchEngine.Controllers
                     _taskList.Add(client.GetSearchResultsAsync(searchQuery, cts));
                 }
 
-                // TODO:  Add CancellationToken
                 var firstCompletedTask = await Task.WhenAny(_taskList);
+                cts.Cancel();
                 var searchResults = await firstCompletedTask;
 
                 if (searchResults != null)
@@ -55,7 +55,7 @@ namespace CustomSearchEngine.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"Error: {ex.Message}");
                 throw;
             }
         }
