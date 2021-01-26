@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Services
@@ -27,10 +28,10 @@ namespace CustomSearchEngine.Services
             _httpClient = httpClient;
         }
 
-        public async Task<SearchResult> GetSearchResultsAsync(string searchQuery)
+        public async Task<SearchResult> GetSearchResultsAsync(string searchQuery, CancellationTokenSource cts)
         {
             var results = await _httpClient
-                .GetFromJsonAsync<BingWebSearchApiResult>(_httpClient.BaseAddress + searchQuery);
+                .GetFromJsonAsync<BingWebSearchApiResult>(_httpClient.BaseAddress + searchQuery, cts.Token);
 
             var searhResultItems = new List<SearchResultItem>();
             foreach (var item in results.WebPages.Value)

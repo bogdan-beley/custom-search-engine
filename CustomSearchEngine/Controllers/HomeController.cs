@@ -7,6 +7,7 @@ using CustomSearchEngine.Services;
 using System;
 using System.Collections.Generic;
 using CustomSearchEngine.External.Models;
+using System.Threading;
 
 namespace CustomSearchEngine.Controllers
 {
@@ -34,13 +35,13 @@ namespace CustomSearchEngine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchResultsFromAPI(string searchQuery)
+        public async Task<IActionResult> SearchResultsFromAPI(string searchQuery, CancellationTokenSource cts)
         {
             try
             {
                 foreach (var client in _externalWebSearchApiClients)
                 {
-                    _taskList.Add(client.GetSearchResultsAsync(searchQuery));
+                    _taskList.Add(client.GetSearchResultsAsync(searchQuery, cts));
                 }
 
                 // TODO:  Add CancellationToken
