@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using CustomSearchEngine.External.Models;
 using System.Threading;
+using System.Linq;
 
 namespace CustomSearchEngine.Controllers
 {
@@ -39,17 +40,15 @@ namespace CustomSearchEngine.Controllers
         {
             try
             {
-                foreach (var client in _externalWebSearchApiClients)
-                {
-                    _taskList.Add(client.GetSearchResultsAsync(searchQuery, cts));
-                }
+                _taskList.AddRange(_externalWebSearchApiClients
+                    .Select(client => client.GetSearchResultsAsync(searchQuery, cts)));
 
                 var firstCompletedTask = await Task.WhenAny(_taskList);
-                cts.Cancel();
-                var searchResults = await firstCompletedTask;
 
-                if (searchResults != null)
-                    await _searchResultService.WriteToDbAsync(searchResults);
+                cts.Cancel();
+
+                var searchResults = await firstCompletedTask;
+                await _searchResultService.WriteToDbAsync(searchResults);
 
                 return View(searchResults);
             }
