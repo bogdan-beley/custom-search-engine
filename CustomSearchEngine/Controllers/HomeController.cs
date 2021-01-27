@@ -7,6 +7,8 @@ using CustomSearchEngine.Services;
 using System;
 using System.Collections.Generic;
 using CustomSearchEngine.External.Models;
+using System.Threading;
+using System.Linq;
 
 namespace CustomSearchEngine.Controllers
 {
@@ -15,7 +17,7 @@ namespace CustomSearchEngine.Controllers
         private readonly IEnumerable<IExternalWebSearchApiClient> _externalWebSearchApiClients;
         private readonly ISearchResultsService _searchResultService;
         private readonly ILogger<HomeController> _logger;
-        private List<Task<SearchResult>> _taskList;
+        private readonly List<Task<SearchResult>> _taskList;
 
         public HomeController(IEnumerable<IExternalWebSearchApiClient> externalWebSearchApiClients,
             ISearchResultsService searchResultsService, 
@@ -34,27 +36,25 @@ namespace CustomSearchEngine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchResultsFromAPI(string searchQuery)
+        public async Task<IActionResult> SearchResultsFromAPI(string searchQuery, CancellationTokenSource cts)
         {
             try
             {
-                foreach (var client in _externalWebSearchApiClients)
-                {
-                    _taskList.Add(client.GetSearchResultsAsync(searchQuery));
-                }
+                _taskList.AddRange(_externalWebSearchApiClients
+                    .Select(client => client.GetSearchResultsAsync(searchQuery, cts)));
 
-                // TODO:  Add CancellationToken
                 var firstCompletedTask = await Task.WhenAny(_taskList);
-                var searchResults = await firstCompletedTask;
 
-                if (searchResults != null)
-                    await _searchResultService.WriteToDbAsync(searchResults);
+                cts.Cancel();
+
+                var searchResults = await firstCompletedTask;
+                await _searchResultService.WriteToDbAsync(searchResults);
 
                 return View(searchResults);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"Error: {ex.Message}");
                 throw;
             }
         }
