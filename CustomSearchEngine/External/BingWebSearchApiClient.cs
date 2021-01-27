@@ -44,14 +44,18 @@ namespace CustomSearchEngine.Services
                 .GetFromJsonAsync<BingWebSearchApiResult>(_httpClient.BaseAddress + searchQuery, cts.Token);
 
                 var searhResultItems = new List<SearchResultItem>();
-                foreach (var item in results.WebPages.Value)
+
+                if (results != null)
                 {
-                    searhResultItems.Add(new SearchResultItem()
+                    foreach (var item in results.WebPages.Value)
                     {
-                        Title = item.Name,
-                        Link = item.DisplayUrl,
-                        Snippet = item.Snippet
-                    });
+                        searhResultItems.Add(new SearchResultItem()
+                        {
+                            Title = item.Name,
+                            Link = item.DisplayUrl,
+                            Snippet = item.Snippet
+                        });
+                    }
                 }
 
                 searchResult = new SearchResult()

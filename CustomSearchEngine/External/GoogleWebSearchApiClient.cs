@@ -45,14 +45,18 @@ namespace CustomSearchEngine.Services
                 .GetFromJsonAsync<GoogleWebSearchApiResult>(_httpClient.BaseAddress + searchQuery, cts.Token);
 
                 var searhResultItems = new List<SearchResultItem>();
-                foreach (var item in results.Items)
+
+                if (results != null)
                 {
-                    searhResultItems.Add(new SearchResultItem()
+                    foreach (var item in results.Items)
                     {
-                        Title = item.Title,
-                        Link = item.DisplayLink,
-                        Snippet = item.Snippet
-                    });
+                        searhResultItems.Add(new SearchResultItem()
+                        {
+                            Title = item.Title,
+                            Link = item.DisplayLink,
+                            Snippet = item.Snippet
+                        });
+                    }
                 }
 
                 searchResult = new SearchResult()
