@@ -1,22 +1,27 @@
 ﻿using CustomSearchEngine.Configuration;
+using CustomSearchEngine.External.Models;
 using CustomSearchEngine.Models;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CustomSearchEngine.Services
 {
-    public sealed class GoogleWebSearchApiClient : IGoogleWebSearchApiClient
+    public sealed class GoogleWebSearchApiClient : IExternalWebSearchApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly ExternalApiClientsConfig _externalApiClientConfig;
+        private readonly ILogger<GoogleWebSearchApiClient> _logger;
 
         public GoogleWebSearchApiClient(
-            HttpClient httpClient, IOptionsMonitor<ExternalApiClientsConfig> options)
+            HttpClient httpClient, 
+            IOptionsMonitor<ExternalApiClientsConfig> options,
+            ILogger<GoogleWebSearchApiClient> logger)
         {
             _externalApiClientConfig = options.Get(ExternalApiClientsConfig.GoogleWebSearchApiClient);
 
@@ -26,32 +31,49 @@ namespace CustomSearchEngine.Services
                 + "&q=");
 
             _httpClient = httpClient;
+            _logger = logger;
         }
 
-        public async Task<SearchResult> GetSearchResultsAsync(string searchQuery)
+        public async Task<SearchResult> GetSearchResultsAsync(string searchQuery, CancellationTokenSource cts)
         {
-            var results = await _httpClient
-                .GetFromJsonAsync<GoogleWebSearchApiResult>(_httpClient.BaseAddress + searchQuery);
+            var searchResult = new SearchResult();
 
-            var searhResultItems = new List<SearchResultItem>();
-            foreach (var item in results.Items)
+            try
             {
-                searhResultItems.Add(new SearchResultItem()
+                var results = await _httpClient
+                .GetFromJsonAsync<GoogleWebSearchApiResult>(_httpClient.BaseAddress + searchQuery, cts.Token);
+
+                var searhResultItems = new List<SearchResultItem>();
+
+                if (results != null)
                 {
-                    Title = item.Title,
-                    Link = item.DisplayLink,
-                    Snippet = item.Snippet
-                });
+                    foreach (var item in results.Items)
+                    {
+                        searhResultItems.Add(new SearchResultItem()
+                        {
+                            Title = item.Title,
+                            Link = item.DisplayLink,
+                            Snippet = item.Snippet
+                        });
+                    }
+                }
+
+                searchResult = new SearchResult()
+                {
+                    SearchResultItems = searhResultItems,
+                    SearchQuery = searchQuery,
+                    SearchEngine = "Google"
+                };
+
+                return searchResult;
             }
-
-            var searchResult = new SearchResult()
+            catch (TaskCanceledException ex)
             {
-                SearchResultItems = searhResultItems,
-                SearchQuery = searchQuery,
-                SearchEngine = "Google"
-            };
+                _logger.LogInformation("The task was canceled because the server " +
+                    "had already received a response from another client. Message: " + ex.Message);
 
-            return searchResult;
+                return searchResult;
+            }
         }
     }
 }

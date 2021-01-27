@@ -6,26 +6,27 @@ using System.Threading.Tasks;
 using CustomSearchEngine.Services;
 using System;
 using System.Collections.Generic;
+using CustomSearchEngine.External.Models;
+using System.Threading;
+using System.Linq;
 
 namespace CustomSearchEngine.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IGoogleWebSearchApiClient _googleCustomSearchService;
-        private readonly IBingWebSearchApiClient _bingCustomSearchService;
+        private readonly IEnumerable<IExternalWebSearchApiClient> _externalWebSearchApiClients;
         private readonly ISearchResultsService _searchResultService;
         private readonly ILogger<HomeController> _logger;
+        private readonly List<Task<SearchResult>> _taskList;
 
-        public HomeController(
-            IGoogleWebSearchApiClient googleCustomSearchService, 
+        public HomeController(IEnumerable<IExternalWebSearchApiClient> externalWebSearchApiClients,
             ISearchResultsService searchResultsService, 
-            IBingWebSearchApiClient bingCustomSearchService,
             ILogger<HomeController> logger)
         {
-            _googleCustomSearchService = googleCustomSearchService;
-            _bingCustomSearchService = bingCustomSearchService;
+            _externalWebSearchApiClients = externalWebSearchApiClients;
             _searchResultService = searchResultsService;
             _logger = logger;
+            _taskList = new List<Task<SearchResult>>();
         }
 
         public IActionResult Index()
@@ -35,31 +36,25 @@ namespace CustomSearchEngine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchResultsFromAPI(string searchQuery)
+        public async Task<IActionResult> SearchResultsFromAPI(string searchQuery, CancellationTokenSource cts)
         {
             try
             {
-                var searchResultsFromGoogle = _googleCustomSearchService.GetSearchResultsAsync(searchQuery);
-                var searchResultsFromBing = _bingCustomSearchService.GetSearchResultsAsync(searchQuery);
+                _taskList.AddRange(_externalWebSearchApiClients
+                    .Select(client => client.GetSearchResultsAsync(searchQuery, cts)));
 
-                var tasksList = new List<Task<SearchResult>>
-                {
-                    searchResultsFromGoogle,
-                    searchResultsFromBing
-                };
+                var firstCompletedTask = await Task.WhenAny(_taskList);
 
-                // TODO: Add CancellationToken
-                var firstCompletedTask = await Task.WhenAny(tasksList);
+                cts.Cancel();
+
                 var searchResults = await firstCompletedTask;
-
-                if (searchResults != null)
-                    await _searchResultService.WriteToDbAsync(searchResults);
+                await _searchResultService.WriteToDbAsync(searchResults);
 
                 return View(searchResults);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"Error: {ex.Message}");
                 throw;
             }
         }

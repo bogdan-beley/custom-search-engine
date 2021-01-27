@@ -1,4 +1,5 @@
 using CustomSearchEngine.Configuration;
+using CustomSearchEngine.External.Models;
 using CustomSearchEngine.Models;
 using CustomSearchEngine.Services;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 
 namespace CustomSearchEngine
 {
@@ -28,8 +28,8 @@ namespace CustomSearchEngine
             services.AddDbContext<CustomSearchEngineContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
            
-            services.AddHttpClient<IGoogleWebSearchApiClient, GoogleWebSearchApiClient>();
-            services.AddHttpClient<IBingWebSearchApiClient, BingWebSearchApiClient>();
+            services.AddHttpClient<IExternalWebSearchApiClient, GoogleWebSearchApiClient>();
+            services.AddHttpClient<IExternalWebSearchApiClient, BingWebSearchApiClient>();
 
             services.Configure<ExternalApiClientsConfig>(ExternalApiClientsConfig.BingWebSearchApiClient, Configuration.GetSection("ExternalApiClientsConfig:BingWebSearchApiClient"));
             services.Configure<ExternalApiClientsConfig>(ExternalApiClientsConfig.GoogleWebSearchApiClient, Configuration.GetSection("ExternalApiClientsConfig:GoogleWebSearchApiClient"));

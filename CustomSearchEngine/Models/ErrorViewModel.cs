@@ -1,4 +1,3 @@
-using System;
 
 namespace CustomSearchEngine.Models
 {
