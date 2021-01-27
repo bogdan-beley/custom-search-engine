@@ -22,7 +22,7 @@ namespace CustomSearchEngine
                 })
                 .ConfigureAppConfiguration((ctx, builder) =>
                 {
-                    if (ctx.HostingEnvironment.IsStaging())
+                    if (!ctx.HostingEnvironment.IsDevelopment())
                     {
                         var config = builder.Build();
                         var tokenProvider = new AzureServiceTokenProvider();
