@@ -1,7 +1,6 @@
 ﻿using CustomSearchEngine.Configuration;
 using CustomSearchEngine.External.Models;
 using CustomSearchEngine.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;

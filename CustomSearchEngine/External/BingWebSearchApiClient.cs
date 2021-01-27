@@ -1,13 +1,10 @@
 ﻿using CustomSearchEngine.Configuration;
 using CustomSearchEngine.External.Models;
 using CustomSearchEngine.Models;
-using Google.Apis.Logging;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
