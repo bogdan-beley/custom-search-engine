@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+
+<h2>About the project</h2>
+<hr />
+
+<p class="text-justify">
+    <span class="font-weight-bold">
+        CustomSearchEngine
+    </span> is an application that searches for user-specified words on Google and Bing search engines using their APIs.
+    Top 10 search values of the result that comes first are written to the database and displayed on the page.
+    Reply from another service is ignored. Users have the ability to search for already saved results in the database.
+</p>
+
+<h2>Technologies used</h2>
+<hr />
+
+<p class="text-justify">
+    This pet project was designed to improve development skills using <span class="font-weight-bold font-italic">ASP.NET Core platform</span>.
+    The application architecture is based on <span class="font-weight-bold font-italic">MVC design pattern</span>.
+</p>
+<p class="text-justify">
+    External search API clients were designed using <span class="font-weight-bold font-italic">HttpClientFactory</span> and <span class="font-weight-bold font-italic">Typed Client</span> approaches.
+    They were registered using <span class="font-weight-bold font-italic">Dependency Injection</span> by registering multiple implementations of an interface.
+</p>
+<p class="text-justify">
+    <span class="font-weight-bold font-italic">Entity Framework Core Code-First</span> approach was used to connect to <span class="font-weight-bold font-italic">MS SQL Server</span> database. 
+    To send and deserialize JSON data via HttpClient we used <span class="font-weight-bold font-italic">GetFromJsonAsync</span> extension method added by System.Net.Http.Json library. 
+    After receiving search results from one of the API clients, all other tasks are canceled with the help of <span class="font-weight-bold font-italic">CancellationToken</span> implementation.
+</p>
+<p class="text-justify">
+    To add strongly typed settings to the project, <span class="font-weight-bold font-italic">Options pattern</span> was implemented. 
+    This, in turn, ensures compliance with the <span class="font-weight-bold font-italic">Separations of concerns</span> and <span class="font-weight-bold font-italic">Interface segregation</span> principles. 
+    For security reasons, all sensitive data and secrets are stored using <span class="font-weight-bold font-italic">User Secrets</span> (for the development environment) and <span class="font-weight-bold font-italic">Azure Key Vault</span> (for the Production) Configuration Providers.
+</p>
+<p class="text-justify">
+    Finally, the project was deployed to <span class="font-weight-bold font-italic">Azure App Service</span> by using GitHub <span class="font-weight-bold font-italic">CI/CD workflow</span>.
+</p>

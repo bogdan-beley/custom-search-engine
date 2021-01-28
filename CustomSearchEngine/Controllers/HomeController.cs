@@ -70,6 +70,11 @@ namespace CustomSearchEngine.Controllers
             return View(await _searchResultService.FindByTitle(searchQuery));
         }
 
+        public IActionResult About()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
