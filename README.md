@@ -10,4 +10,8 @@ This pet project was designed to improve development skills using **ASP.NET Core
 
 External search API clients were designed using **HttpClientFactory** and **Typed Client** approaches. They were registered using **Dependency Injection** by registering multiple implementations of an interface.
 
-...
+**Entity Framework Core Code-First** approach was used to connect to **MS SQL Server** database. To send and deserialize JSON data via HttpClient we used **GetFromJsonAsync**  extension method added by System.Net.Http.Json library. After receiving search results from one of the API clients, all other tasks are canceled with the help of **CancellationToken** implementation.
+
+To add strongly typed settings to the project, **Options pattern** was implemented. This, in turn, ensures compliance with the **Separations of concerns** and **Interface segregation** principles. For security reasons, all sensitive data and secrets are stored using **User Secrets** (for the development environment) and **Azure Key Vault** (for the Production) Configuration Providers.
+
+Finally, the project was deployed to **Azure App Service** by using GitHub **CI/CD workflow**.
