@@ -15,3 +15,10 @@ External search API clients were designed using **HttpClientFactory** and **Type
 To add strongly typed settings to the project, **Options pattern** was implemented. This, in turn, ensures compliance with the **Separations of concerns** and **Interface segregation** principles. For security reasons, all sensitive data and secrets are stored using **User Secrets** (for the development environment) and **Azure Key Vault** (for the Production) Configuration Providers.
 
 Finally, the project was deployed to **Azure App Service** by using GitHub **CI/CD workflow**.
+
+## Instructions
+1. git clone https://github.com/bogdan-beley/custom-search-engine
+2. Type the following commands at the commands prompt: `dotnet user-secrets init`
+3. Use the `dotnet user-secrets set "key" "value"` command to set all the keys received from the author of the project, replacing the ***key*** and ***value***. 
+3. Build the application.
+***Importantly. In order to run the project in developer mode, you must set user-secrets.***
