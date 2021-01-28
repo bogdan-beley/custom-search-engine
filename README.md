@@ -17,7 +17,7 @@ To add strongly typed settings to the project, **Options pattern** was implement
 Finally, the project was deployed to **Azure App Service** by using GitHub **CI/CD workflow**.
 
 ## Instructions
-1. git clone https://github.com/bogdan-beley/custom-search-engine
+1. `git clone https://github.com/bogdan-beley/custom-search-engine`
 2. Type the following commands at the commands prompt: `dotnet user-secrets init`
 3. Use the `dotnet user-secrets set "key" "value"` command to set user-secrets received from the author of the project, replacing the ***key*** and ***value***. 
 4. Build the application.
