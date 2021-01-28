@@ -25,7 +25,7 @@ namespace CustomSearchEngine.Services
             _externalApiClientConfig = options.Get(ExternalApiClientsConfig.BingWebSearchApiClient);
             
             httpClient.BaseAddress = new Uri(_externalApiClientConfig.Url);
-            httpClient.DefaultRequestHeaders.Add(_externalApiClientConfig.ApiKeyName, _externalApiClientConfig.ApiKey);
+            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _externalApiClientConfig.ApiKey);
 
             _httpClient = httpClient;
             _logger = logger;
