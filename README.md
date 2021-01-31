@@ -20,7 +20,7 @@ Finally, the project was deployed to **Azure App Service** by using GitHub **CI/
 1. `git clone https://github.com/bogdan-beley/custom-search-engine`
 2. Open `CustomSearchEngine.sln` from project location.
 2. Type the following commands at the commands prompt: `dotnet user-secrets init --project "<PATH>"`, replacing ***`<PATH>`*** by project path.
-3. Use the `dotnet user-secrets set "<key>" "<value>" --project "<PATH>"` command to set user-secrets received from the author of the project, replacing ***`<key>`***, ***`<value>`***, and ***`<PATH>`***. 
+3. Use the `dotnet user-secrets set "<KEY>" "<VALUE>" --project "<PATH>"` command to set user-secrets received from the author of the project, replacing ***`<KEY>`***, ***`<VALUE>`***, and ***`<PATH>`***. 
 4. Build and run the application.
 
 ***Importantly. In order to run the project in developer mode, you must set user-secrets.***
