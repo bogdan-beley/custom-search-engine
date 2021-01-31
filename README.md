@@ -23,4 +23,4 @@ Finally, the project was deployed to **Azure App Service** by using GitHub **CI/
 3. Use the `dotnet user-secrets set "<KEY>" "<VALUE>" --project "<PATH>"` command to set user-secrets received from the author of the project, replacing ***`<KEY>`***, ***`<VALUE>`***, and ***`<PATH>`***. 
 4. Build and run the application.
 
-***Importantly. In order to run the project in developer mode, you must set user-secrets.***
+***Importantly. In order to run the project in developer mode, you must set user-secrets. You can get them from the author of the project.***
